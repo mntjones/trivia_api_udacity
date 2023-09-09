@@ -110,8 +110,8 @@ def create_app(test_config=None):
             
             result = {
                 'success': True,
-                'question deleted': question_id,
-                'total questions': len(Question.query.all()),
+                'question_deleted': question_id,
+                'total_questions': len(Question.query.all()),
                 'questions': current_questions
             }
             
@@ -122,6 +122,7 @@ def create_app(test_config=None):
             abort(422)
         
 # Endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
+
 # POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
 
     @app.route('/questions', methods=['POST'])
@@ -192,10 +193,7 @@ def create_app(test_config=None):
             abort(422)
     
 
-# Endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
-
-# POST endpoint to get questions based on a search term. 
-# It should return any questions for whom the search term is a substring of the question.
+    # GET endpoint to get questions based on category
     
     @app.route('/categories/<int:cat_id>/questions')
     def list_questions_by_category(cat_id):
@@ -222,7 +220,7 @@ def create_app(test_config=None):
 
     #POST endpoint to get questions to play the quiz. 
     #This endpoint takes a category and previous question parameters and returns a random question
-
+    
     @app.route('/quizzes', methods=['POST'])
     def quiz():
         try:
@@ -246,7 +244,6 @@ def create_app(test_config=None):
         # 2. if so, makes the current question a question from remaining questions with a random index
         # 3. else, makes the current question - None to end the game
         # 4. returns: success is true and the current question
-
             
             # helper method to get random index number
             def random_index():
@@ -261,9 +258,10 @@ def create_app(test_config=None):
                 'success':True,
                 'question': current_question
             })
+            
         
         except:
-            abort(500)
+            abort(422)
                  
     
     # error handlers
@@ -290,7 +288,7 @@ def create_app(test_config=None):
             'error': 422,
             'message': 'Cannot process this request'
         }), 422
-
+    
     @app.errorhandler(500)
     def internal_server_error(error):
         return jsonify ({
@@ -300,5 +298,3 @@ def create_app(test_config=None):
         }), 500
 
     return app
-
-

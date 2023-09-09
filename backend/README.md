@@ -71,7 +71,12 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
 
-### Documentation Example
+## Endpoints
+
+`GET '/api/v1.0/questions'`
+
+- Fetches 
+
 
 `GET '/api/v1.0/categories'`
 
