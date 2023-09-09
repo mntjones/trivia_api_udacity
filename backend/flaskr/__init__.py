@@ -65,6 +65,7 @@ def create_app(test_config=None):
     def get_questions():
         
         questions = Question.query.all()
+        question_format = [question.format() for question in questions]
         total_questions = len(questions)
         
         # gets 10 questions/page
@@ -83,7 +84,7 @@ def create_app(test_config=None):
         result = {'success': True,
                  'categories': cat_dict,
                  'total_questions': total_questions,
-                 'questions': current_questions}
+                 'questions': question_format}
             
         return jsonify(result)  
 
@@ -107,12 +108,13 @@ def create_app(test_config=None):
             # getting all reamining questions for display
             selection = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, selection)
-            
+            question_format = [question.format() for question in selection]
+
             result = {
                 'success': True,
                 'question_deleted': question_id,
                 'total_questions': len(Question.query.all()),
-                'questions': current_questions
+                'questions': question_format
             }
             
             return jsonify(result)
@@ -154,8 +156,8 @@ def create_app(test_config=None):
                 if current_questions:
                     result = {
                         'success': True,
-                        'questions': current_questions,
-                        'total books in search': len(selection)
+                        'questions': selection,
+                        'total questions in search': len(selection)
                     }
                     
                     return jsonify(result)
@@ -185,7 +187,7 @@ def create_app(test_config=None):
                     'success': True,
                     'created': created_question.id,
                     'total_questions': len(Question.query.all()),
-                    'questions': current_questions
+                    'questions': selection
                 }
                 return jsonify(result)
             
@@ -212,7 +214,7 @@ def create_app(test_config=None):
             'success': True,
             'current category': current_category.type,
             'total questions': len(current_questions),
-            'questions': current_questions
+            'questions': selection
         }
         
         return jsonify(result)
