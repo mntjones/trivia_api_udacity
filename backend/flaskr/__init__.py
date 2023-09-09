@@ -77,7 +77,7 @@ def create_app(test_config=None):
             cat_dict[cat.id] = cat.type
         
         # check for error of empty DBs
-        if ((len(questions)==0) or (len(cat_dict)==0)):
+        if ((len(current_questions) == 0) or (len(cat_dict) == 0)):
             abort(404)
         
         result = {'success': True,
