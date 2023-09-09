@@ -122,7 +122,6 @@ def create_app(test_config=None):
             abort(422)
         
 # Endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
-
 # POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
 
     @app.route('/questions', methods=['POST'])
@@ -193,14 +192,10 @@ def create_app(test_config=None):
             abort(422)
     
 
-    """
-    @TODO:
-    Create a GET endpoint to get questions based on category.
+# Endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
 
-    TEST: In the "List" tab / main screen, clicking on one of the
-    categories in the left column will cause only questions of that
-    category to be shown.
-    """
+# POST endpoint to get questions based on a search term. 
+# It should return any questions for whom the search term is a substring of the question.
     
     @app.route('/categories/<int:cat_id>/questions')
     def list_questions_by_category(cat_id):
@@ -225,17 +220,9 @@ def create_app(test_config=None):
         return jsonify(result)
         
 
-    """
-    @TODO:
-    Create a POST endpoint to get questions to play the quiz.
-    This endpoint should take category and previous question parameters
-    and return a random questions within the given category,
-    if provided, and that is not one of the previous questions.
+    #POST endpoint to get questions to play the quiz. 
+    #This endpoint takes a category and previous question parameters and returns a random question
 
-    TEST: In the "Play" tab, after a user selects "All" or a category,
-    one question at a time is displayed, the user is allowed to answer
-    and shown whether they were correct or not.
-    """
     @app.route('/quizzes', methods=['POST'])
     def quiz():
         try:
@@ -303,6 +290,14 @@ def create_app(test_config=None):
             'error': 422,
             'message': 'Cannot process this request'
         }), 422
+
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return jsonify ({
+            'success': False,
+            'error': 500,
+            'message': 'Internal server error - cannot process request'
+        }), 500
 
     return app
 
