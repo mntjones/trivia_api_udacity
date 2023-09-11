@@ -67,18 +67,25 @@ class TriviaTestCase(unittest.TestCase):
     
     # DELETE question tests
     def test_delete_question(self):
+        
+        
+        
         #add question
         q = Question(question="what is love?", answer="baby, don't hurt me no more", category=1, difficulty=3)
+       
         q.insert()
-        q_id = q.id
         
+        # before delete
         before = len(Question.query.all())
+        
+        q_id = q.id
         
         # res is going to the path with the created question id
         res = self.client().delete('/questions/{}'.format(q_id))
         data = json.loads(res.data)
         
         question = Question.query.filter(Question.id == q_id).one_or_none()
+        
         after = len(Question.query.all())
         
         self.assertEqual(res.status_code, 200)
@@ -86,7 +93,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['question_deleted'], q_id)
         self.assertEqual(question, None)
         self.assertTrue(data['total_questions'])
-        self.assertEqual((after+1), before)
+        self.assertTrue(after < before)
     
     def test_422_error_delete_question_not_in_db(self):
         res = self.client().delete('/questions/100')

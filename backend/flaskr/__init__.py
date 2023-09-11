@@ -65,7 +65,6 @@ def create_app(test_config=None):
     def get_questions():
         
         questions = Question.query.all()
-        question_format = [question.format() for question in questions]
         total_questions = len(questions)
         
         # gets 10 questions/page
@@ -84,7 +83,7 @@ def create_app(test_config=None):
         result = {'success': True,
                  'categories': cat_dict,
                  'total_questions': total_questions,
-                 'questions': question_format}
+                 'questions': current_questions}
             
         return jsonify(result)  
 
@@ -98,23 +97,18 @@ def create_app(test_config=None):
             # selecting question - if ID not found, vqriable question is set to None
             question = Question.query.filter(Question.id == question_id).one_or_none()
             
-            if question is None:
-                # bad request
-                abort(400)
-            
             # delete question from DB
             question.delete()
             
             # getting all reamining questions for display
             selection = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, selection)
-            question_format = [question.format() for question in selection]
-
+            
             result = {
                 'success': True,
                 'question_deleted': question_id,
                 'total_questions': len(Question.query.all()),
-                'questions': question_format
+                'questions': current_questions
             }
             
             return jsonify(result)
@@ -149,6 +143,7 @@ def create_app(test_config=None):
                 
                 # get all questions with search term
                 selection = Question.query.order_by(Question.id).filter(Question.question.ilike(f'%{search_term}%')).all()
+            
                 # paginate found questions with search term
                 current_questions = paginate_questions(request, selection)
                 
@@ -156,15 +151,13 @@ def create_app(test_config=None):
                 if current_questions:
                     result = {
                         'success': True,
-                        'questions': selection,
+                        'questions': current_questions,
                         'total questions in search': len(selection)
                     }
                     
                     return jsonify(result)
-                
                 else:
-                    #no results found
-                    abort(404)
+                    abort(500)
                     
             # no search term, create new question
             else:
@@ -181,13 +174,14 @@ def create_app(test_config=None):
 
                 #reload questions on page
                 selection = Question.query.order_by(Question.id).all()
+                
                 current_questions = paginate_questions(request, selection)
 
                 result = {
                     'success': True,
                     'created': created_question.id,
                     'total_questions': len(Question.query.all()),
-                    'questions': selection
+                    'questions': current_questions
                 }
                 return jsonify(result)
             
@@ -214,7 +208,7 @@ def create_app(test_config=None):
             'success': True,
             'current category': current_category.type,
             'total questions': len(current_questions),
-            'questions': selection
+            'questions': current_questions
         }
         
         return jsonify(result)
